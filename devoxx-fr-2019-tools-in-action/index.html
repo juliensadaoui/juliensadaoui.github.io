@@ -1,0 +1,1076 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>DevoxxFR - Tools in action</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/devoxxfr.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/darcula.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-state="intro">
+					<img src="images/RX_Logo_S.png" style="margin: 20px">
+					<img src="images/reactor_logo_s.png" style="margin: 20px">
+					<h1>Utiliser les flux réactifs c'est bien,
+						<br />les tester et les debugger c'est mieux !</h1>
+					<p></p>
+					<p style="margin-top:10%">Julien Sadaoui <a href="http://twitter.com/juliensadaoui">@juliensadaoui</a><br />
+				</section>
+				<section data-state="intro">
+					<div class="cols">
+							<div class="col">
+									<h4 style="color: #6BB884"><strong>Julien Sadaoui</strong></h4>
+									<p>Consultant, Ippon Technologies</p>
+									<p><strong>Responsable du pôle formation</strong></p>	
+									<p>Formateur Spring et Hibernate</p>
+									<p>Développeur Java <3</p>						
+							</div>
+							<div class="col">
+									<img data-src="images/photo.jpg" style="border: solid 5px white;"/>
+							</div>
+					</div>
+				</section>
+				<section data-state="intro">
+					<h4>Quelques mots sur Ippon Technologies</h4>
+					<h4>&nbsp;</h4>
+					<ul>
+						<li>400 consultants : France, USA, Australie, Russie</li>
+						<li>Spécialisés en Java, Web, Cloud, Data, etc.</li>
+						<li>On recrute ! Rejoignez-nous sur le stand "JHipster" :-)</li>
+					</ul>
+					<img data-src="images/ippon-technologies.jpg" width="50%" height="50%" style="border: solid 5px white;"/>
+				</section>
+
+				<section align="center">
+					<div style="margin-top: 5%; font-size: 45px">
+						<img src="images/RX_Logo_S.png" width="18%" heigth="18%" style="margin: 40px">
+						<img src="images/reactor_logo_s.png" width="18%" heigth="18%"  style="margin: 40px">
+
+					<p class="fragment" style="font-size: 45px">
+							API pour manipuler des <strong style="color:#6b9cb8">flux de données</strong><br />
+							de manière <strong style="color: #fe5254">synchrone ou asynchrone</strong></strong>
+					</p>
+				</section>
+				<section>
+					<section>
+						<h1 align="center">Anatomie d'un flux</h1>
+						<svg style="width: 680px; height: 140px; overflow: visible;" viewBox="0 0 100 10">
+							
+								<!-- Publisher -->
+								<g style="cursor: default;" transform="translate(15, 25)">
+									<rect width="25" height="12" style="fill:#6BB884;stroke-width:0.4;stroke:rgb(0,0,0)" />
+									<text x="12.5" y="7" text-anchor="middle" style="fill: black; font-size: 4.5px">Publisher</text>
+								</g>
+
+								<!-- Filter() -->
+								<g style="cursor: default;" transform="translate(60, 25)">
+										<rect width="20" height="12" style="fill:rgb(107, 156, 184);stroke-width:0.4;stroke:rgb(0,0,0)" />
+										<text x="10" y="7" text-anchor="middle" style="fill: black; font-size: 4.5px">Filter()</text>
+								</g>
+
+								<!-- Map() -->
+								<g style="cursor: default;" transform="translate(100, 25)">
+										<rect width="20" height="12" style="fill:rgb(107, 156, 184);stroke-width:0.4;stroke:rgb(0,0,0)" />
+										<text x="10" y="7" text-anchor="middle" style="fill: black; font-size: 4.5px">Map()</text>
+								</g>
+
+								<!-- Subscriber -->
+								<g style="cursor: default;" transform="translate(140, 25)">
+									<rect width="25" height="12" style="fill:#6BB884;stroke-width:0.4;stroke:rgb(0,0,0)" />
+									<text x="12.5" y="7" text-anchor="middle" style="fill: black; font-size: 4.5px">Subscriber</text>
+								</g>
+
+								<!-- Souscription -->
+								<g class="fragment" data-fragment-index="3" style="cursor: default;" transform="translate(35, 38)">
+									<polyline points="0 0 0 5 30 5 30 -1" stroke="black" stroke-width="0.4"
+										stroke-linecap="round" fill="none" stroke-linejoin="round"/>
+									<polygon points="-2,3 2,3 0,-1"></polygon>
+								</g>
+
+								<g class="fragment" data-fragment-index="2" transform="translate(75, 38)">
+									<polyline points="0 0 0 5 30 5 30 -1" stroke="black" stroke-width="0.4"
+										stroke-linecap="round" fill="none" stroke-linejoin="round"/>
+									<polygon points="-2,3 2,3 0,-1"></polygon>
+								</g>
+
+								<g class="fragment" data-fragment-index="1" transform="translate(115, 38)">
+									<polyline points="0 0 0 5 30 5 30 -1" stroke="black" stroke-width="0.4"
+									stroke-linecap="round" fill="none" stroke-linejoin="round"/>
+									<polygon points="-2,3 2,3 0,-1"></polygon>
+								</g>
+
+								<g class="fragment" data-fragment-index="1" transform="translate(115, 38)">
+									<polyline points="0 0 0 5 30 5 30 -1" stroke="black" stroke-width="0.4"
+										stroke-linecap="round" fill="none" stroke-linejoin="round"/>
+									<polygon points="-2,3 2,3 0,-1"></polygon>
+								</g>
+
+								<!-- Emission -->
+								<g class="fragment" data-fragment-index="4" transform="translate(40, 31)">
+									<line x1="0" x2="20" y1="0" y2="0"></line>
+									<polygon points="17,2 17,-2 20,0"></polygon>
+									<circle style="fill: #F8AD42" cx="10" r="2.8"></circle>
+								</g>
+
+								<g class="fragment" data-fragment-index="5" transform="translate(80, 31)">
+									<line x1="0" x2="20" y1="0" y2="0"></line>
+									<polygon points="17,2 17,-2 20,0"></polygon>
+									<circle style="fill: #F8AD42" cx="10" r="2.8"></circle>
+								</g>
+
+								<g class="fragment" data-fragment-index="6" transform="translate(120, 31)">
+									<line x1="0" x2="20" y1="0" y2="0"></line>
+									<polygon points="17,2 17,-2 20,0"></polygon>
+									<rect x="7.5" y="-2.5" width="5" height="5" style="fill:#6896ba" />
+								</g>
+
+								<!-- Thread -->
+								<g class="fragment" data-fragment-index="7" transform="translate(15, 15)">
+										<line x1="0" x2="70" y1="0" y2="0"></line>
+										<polygon points="-0.5,0 2.5,-2 2.5,2"></polygon>
+										<polygon points="67,2 67,-2 70,0"></polygon>
+										<text x="28" y="-2"  style="font-size: 4.5px">Thread 1</text>
+								</g>
+
+								<g class="fragment" data-fragment-index="8" transform="translate(85, 15)">
+										<line x1="0" x2="45" y1="0" y2="0"></line>
+										<polygon points="-0.5,0 2.5,-2 2.5,2"></polygon>
+										<polygon points="42,2 42,-2 45,0"></polygon>
+										<text x="17" y="-2"  style="font-size: 4.5px">Thread 2</text>
+								</g>
+
+								<g class="fragment" data-fragment-index="9" transform="translate(130, 15)">
+										<line x1="0" x2="35" y1="0" y2="0"></line>
+										<polygon points="-0.5,0 2.5,-2 2.5,2"></polygon>
+										<polygon points="32.5,2 32.5,-2 35.5,0"></polygon>
+										<text x="12" y="-2"  style="font-size: 4.5px">Thread 3</text>
+								</g>
+							</svg>
+							<!-- Programmation réactive = Code qui réagit à des événements et propage des changements -->
+						</section>
+						<section align="center">
+								<h1>Opérateurs</h1>
+								<p style="margin-top: 5%; font-size: 45px">Composition d'opérateurs - Utile pour 
+									<strong style="color: #6b9cb8">manipuler, transformer, combiner </strong>
+									des flux de données</p>
+
+								<div style="margin-top: 3%" class="cols">
+									<div class="fragment col">
+										<ul>
+											<li>filter</li>
+											<li>skip</li>
+											<li>map</li>
+											<li>scan</li>
+											<li>flapMap</li>
+										</ul>
+									</div>
+
+									<div class="fragment col">
+										<ul>
+											<li>concat</li>
+											<li>merge</li>
+											<li>zip</li>
+											<li>reduce</li>
+											<li>etc.</li>
+										</ul>
+									</div>
+								</div>
+								
+						</section>
+						<section data-state="flash bgpicture1" align="center">
+							<div style="text-align:center">
+								<img src="images/twitter_filter_map_reduce.png" width="60%"  height="60%" style="border: solid 5px white; margin-top: 40px"/>
+							</div>
+						</section>
+						<section align="center">
+							<p style="margin-top: 10%; font-size: 100px">
+									<span class="">Tester & Debugger</span><br />
+									<strong style="color: #6b9cb8">dans un monde asynchrone</strong>
+							</p>
+							<br />
+						</section>
+					</section>
+
+				<section>
+					<!-- Tests et best practices -->
+					<section data-state="picture" align="center">
+						<img data-src="images/bad-practices.jpg" width="50%" width="75%" style="border: solid 5px white; margin-top: 30px" />
+						<p style="margin-left:15%;margin-right:15%; font-size:55px">Mauvaises pratiques</p>
+					</section>
+					<section data-transition="none">
+						<h3>Mauvais test #1 : Chemin classique</h3>
+						<pre><code class="java" data-trim data-noescape>var results = new ArrayList&ltString&gt();
+Observable.just("a", "b", "c", "d")
+  .map(String::toUpperCase)
+  .zipWith(Observable.just(1, 2, 3, 4),
+          (letter, index) -> index + "-" + letter);
+						</code></pre>
+					</section>			
+					<section data-transition="none">
+						<h3>Mauvais test #1 : Chemin classique</h3>
+						<pre><code class="java" data-trim data-noescape>var results = new ArrayList&ltString&gt();
+<mark>Observable.just("a", "b", "c", "d")
+  .map(String::toUpperCase)
+  .zipWith(Observable.just(1, 2, 3, 4),
+          (letter, index) -> index + "-" + letter)</mark>
+  .subscribe(results::add);
+	
+assertThat(results)
+  .hasSize(4)
+  .contains("1-A", "2-B", "3-C", "4-D");
+							</code></pre>
+							<div class="fragment callout position-bottom"
+								data-callout="span.hljs-string:contains('2-B')"
+								data-callout-offset-top="-10"
+								data-callout-offset-left="-40">
+							<div class="callout-arrow"></div>
+							<div class="callout-text">Fonctionne seulement si le flux est émis sur le thread courant !</div>
+						</section>
+						<section data-transition="none">
+							<h3>Mauvais test #1 : Sur un autre thread</h3>
+	  					<pre><code class="java" data-trim data-noescape><mark>var results = new ArrayList&ltString&gt();
+Observable.just("a", "b", "c", "d")
+  .map(String::toUpperCase)
+  .zipWith(</mark>Observable.intervalRange(1, 4, 0, 1, TimeUnit.SECONDS),
+          <mark>(letter, index) -> index + "-" + letter)
+  .subscribe(results::add);</mark>
+						</code></pre>
+						<div class="fragment callout position-bottom"
+							data-callout="span.hljs-number:contains('4')"
+							data-callout-offset-top="0"
+							data-callout-offset-left="-200">
+						<div class="callout-arrow"></div>
+						<div class="callout-text">Création du flux sur un autre thread !</div>
+					</section>
+					<section data-transition="none">
+							<h3>Mauvais test #1 : Sur un autre thread</h3>
+	  				<pre><code class="java" data-trim data-noescape><mark>var results = new ArrayList&ltString&gt();
+Observable.just("a", "b", "c", "d")
+  .map(String::toUpperCase)
+  .zipWith(Observable.intervalRange(1, 4, 0, 1, TimeUnit.SECONDS),
+          (letter, index) -> index + "-" + letter)
+  .subscribe(results::add);</mark>
+
+assertThat(results)
+	.hasSize(4)
+	.contains("1-A", "2-B", "3-C", "4-D");
+						</code></pre>
+						<p class="fragment" data-fragment-index="2" style="color: #ff3333">
+								java.lang.AssertionError: <br />
+								Expected size:&lt4&gt but was:&lt1&gt in: <br />
+								&lt["1-A"]&gt
+						</p>
+						<div class="fragment callout position-bottom" data-fragment-index="1"
+							data-callout="span.hljs-string:contains('2-B')"
+							data-callout-offset-left="100"
+							data-callout-offset-top="5">
+							<div class="callout-arrow"></div>
+							<div class="callout-text"><span style="text-align: center">Echec du test, l'opérateur <em>intervalRange</em> change de thread. Les vérifications sont faites trop tôt !</span>
+						</div>
+					</section>
+					<!--<section data-state="intro" data-transition="none">
+						<img src="images/horrifié.jpg" height="25%" width="25%" style="border: solid 5px white; margin-top: 40px"/>
+					</section>
+					-->
+					<section data-transition="none">
+							<h3>Mauvais test #2 : Bloquer le traitement</h3>
+	  				<pre><code class="java" data-trim data-noescape><mark>var results = Observable.just("a", "b", "c", "d")
+  .map(String::toUpperCase)
+  .zipWith(Observable.intervalRange(1, 4, 0, 1, TimeUnit.SECONDS),
+          (letter, index) -> index + "-" + letter)</mark>
+  .blockingIterable();
+
+assertThat(results)
+  .hasSize(4)
+  .contains("1-A", "2-B", "3-C", "4-D");
+						</code></pre>
+						<div class="fragment callout position-bottom" data-fragment-index="1"
+							data-callout="span.hljs-string:contains('2-B')"
+							data-callout-offset-left="100"
+							data-callout-offset-top="5">
+							<div class="callout-arrow"></div>
+							<div class="callout-text"><span style="text-align: center">Le test fonctionne, l'opérateur <em>blockingIterable</em> attend le résultat complet en bloquant le thread courant !</span>
+						</div>
+					</section>					<section data-transition="none">
+							<h3>Mauvais test #3 : Java API Concurrent</h3>
+	  				<pre><code class="java" data-trim data-noescape><mark>var result = new ArrayList&lt&gt();</mark>
+var countDownLatch = new CountDownLatch(4);
+<mark>Observable.just("a", "b", "c", "d")
+  .map(String::toUpperCase)
+  .zipWith(Observable.intervalRange(1, 4, 0, 1, TimeUnit.SECONDS),
+          (letter, index) -> index + "-" + letter)</mark>
+  .subscribe(value -> {
+            result.add(value);
+            countDownLatch.countDown();
+          },
+          error -> Assert.fail());
+
+countDownLatch.await();
+// ...
+						</code></pre>
+						<div class="fragment callout position-bottom" data-fragment-index="1"
+							data-callout="span.hljs-comment:contains('...')"
+							data-callout-offset-left="100"
+							data-callout-offset-top="-20">
+							<div class="callout-arrow"></div>
+							<div class="callout-text"><span style="text-align: center">Un autre appel bloquant !</span>
+						</div>
+					</section>
+					<section data-state="intro" data-transition="none">
+						<img src="images/perplexe.jpg" height="75%" width="75%" style="border: solid 5px white; margin-top: 40px"/>
+					</section>
+			 	</section>
+			 	<!-- Tester avec RxJava-->
+				<section>
+					<section>
+						<h2>RxJava 2 : Tester un flux</h2>
+						<p>TestSubscriber (Flowable) / TestObserver  (Observable)</p>
+						<p class="fragment">Tester un flux au moment de l'émission des événements</p>
+						<ul>
+							<li class="fragment">assertValues/assertComplete</li>
+							<br />
+							<svg class="fragment" style="width: 48px; height: 68px; overflow: visible;" viewBox="0 0 7 10">
+								<line x1="0" x2="112" y1="5" y2="5"></line>
+								<polygon points="111.7,6.1 111.7,3.9 114,5"></polygon>
+							</svg>
+							
+							<svg class="fragment" style="width: 680px; height: 68px; overflow: visible;" viewBox="0 0 100 10">	
+								<g>
+									<circle cx="0" cy="5" r="2.8"></circle><text text-anchor="middle" y="5.8">A</text>
+								</g>
+								<g class="fragment">
+									<circle cx="20" cy="5" r="2.8"></circle><text text-anchor="middle" x="20" y="5.8">B</text>
+								</g>
+								<g class="fragment">
+										<circle cx="40" cy="5" r="2.8"></circle><text text-anchor="middle" x="40" y="5.8">C</text>
+								</g>
+								<g class="fragment">
+										<circle cx="60" cy="5" r="2.8"></circle><text text-anchor="middle" x="60" y="5.8">D</text>
+								</g>
+								<g class="fragment">
+										<circle cx="80" cy="5" r="2.8"></circle><text text-anchor="middle" x="80" y="5.8">E</text>
+								</g>
+								<g class="fragment">
+									<line x1="100.01" x2="100.01" y1="1.7999999999999998" y2="8.2">
+								</line>								
+							</svg>
+
+							<br />
+							<li class="fragment">assertNever/assertError/assertNotComplete</li>
+							<br />
+							<svg class="fragment" style="width: 48px; height: 68px; overflow: visible;" viewBox="0 0 7 10">
+								<line x1="0" x2="112" y1="5" y2="5"></line>
+								<polygon points="111.7,6.1 111.7,3.9 114,5"></polygon>
+							</svg>
+							
+							<svg class="fragment" style="width: 680px; height: 68px; overflow: visible;" viewBox="0 0 100 10">
+								<g>
+									<circle cx="0" cy="5" r="2.8"></circle><text text-anchor="middle" y="5.8">A</text>
+								</g>
+								<g class="fragment">
+									<circle cx="40" cy="5" r="2.8"></circle><text text-anchor="middle" x="40" y="5.8">C</text>
+								</g>
+								<g class="fragment">
+									<circle cx="60" cy="5" r="2.8"></circle><text text-anchor="middle" x="60" y="5.8">D</text>
+								</g>
+								<g class="fragment" style="cursor: default;" transform="translate(80, 5)">
+									<line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" style="stroke:rgb(255,0,0);stroke-width:0.6" />
+									<line x1="2.5" y1="-2.5" x2="-2.5" y2="2.5" style="stroke:rgb(255,0,0);stroke-width:0.6" />
+								</g>
+							</svg>
+						</ul>							
+					</section>
+					<section data-transition="none">
+						<h3>Step 1 : Souscription au flux</h3>
+						<pre><code class="java" data-trim data-noescape>Observable.just("a", "b", "c", "d", "e")
+  .filter(letter -> !letter.equals("d"))
+  .map(String::toUpperCase)
+  .test()
+  // ...
+						</code></pre>
+						<div class="fragment callout position-bottom"
+							data-callout="span.hljs-comment:contains('...')"
+							data-callout-offset-top="-10"
+							data-callout-offset-left="30">
+						<div class="callout-arrow"></div>
+						<div class="callout-text">L'opérateur <em>test</em> souscrit au flux et retourne un TestObserver</div>
+					</section>
+					<section data-transition="none">
+						<h3>Step 2 : Test du nombre d'éléments émis</h3>
+						<pre><code class="java" data-trim data-noescape>Observable.just("a", "b", "c", "d", "e")
+  .filter(letter -> !letter.equals("d"))
+  .map(String::toUpperCase)
+  .test()
+  .assertValueCount(4)
+  // ...
+						</code></pre>
+					</section>				
+					<section data-transition="none">
+						<h3>Step 3 : Test des éléments émis</h3>
+						<pre><code class="java" data-trim data-noescape>Observable.just("a", "b", "c", "d", "e")
+  .filter(letter -> !letter.equals("d"))
+  .map(String::toUpperCase)
+  .test()
+  .assertValueCount(4)
+  .assertValues("A", "B", "C", "E")
+  // ...
+						</code></pre>
+					</section>				
+					<section data-transition="none">
+						<h3>Step 4 : Test des éléments non émis</h3>
+						<pre><code class="java" data-trim data-noescape>Observable.just("a", "b", "c", "d", "e")
+  .filter(letter -> !letter.equals("d"))
+  .map(String::toUpperCase)
+  .test()
+  .assertValueCount(4)
+  .assertValues("A", "B", "C", "E")
+  .assertNever("D")
+  // ...	
+						</code></pre>
+				  </section>
+				  <section data-transition="none">
+						<h3>Step 5 : Test de la fin du flux</h3>
+						<pre><code class="java" data-trim data-noescape>Observable.just("a", "b", "c", "d", "e")
+  .filter(letter -> !letter.equals("d"))
+  .map(String::toUpperCase)
+  .test()
+  .assertValueCount(4)
+  .assertValues("A", "B", "C", "E")
+  .assertNever("D")
+  .assertComplete();
+						</code></pre>
+					</section>
+				  <section data-transition="none">
+						<h3>Sans utiliser l'opérateur test</h3>
+						<pre><code class="java" data-trim data-noescape>TestObserver&ltString&gt testObserver = new TestObserver&lt&gt();
+<mark>Observable.just("a", "b", "c", "d", "e")
+  .filter(letter -> !letter.equals("d"))
+  .map(String::toUpperCase)</mark>
+  .subscribe(testObserver);
+
+<mark>testObserver
+  .assertValueCount(4)
+  .assertValues("A", "B", "C", "E")
+  .assertNever("D")
+  .assertNoErrors()
+  .assertComplete();</mark>
+						</code></pre>
+					</section>
+
+					<!-- Tester avec de la backpressure -->
+					<section data-transition="none">
+						<h3>Test et Backpressure</h3>
+						<div style="margin-left: 22%">
+							<img data-src="images/duotone_volt.png" width="70%" height="70%" style="border: solid 5px white;"/>
+						</div>
+					</section>
+					<section>
+							<h4>Sans Backpressure : Push mode</h4>
+							<svg style="width: 680px; height: 140px; overflow: visible;" viewBox="0 0 100 10">
+								
+									<g style="cursor: default;" transform="translate(40, 0)">
+										<rect width="25" height="12" style="fill:#6BB884;stroke-width:0.4;stroke:rgb(0,0,0)" />
+										<line x1="12.5" x2="12.5" y1="12" y2="70"></line>
+										<text x="12.5" y="7" text-anchor="middle" style="fill: black; font-size: 4.5px">Publisher</text>
+									</g>
+									<g style="cursor: default;" transform="translate(120, 0)">
+										<rect width="25" height="12" style="fill:#6BB884;stroke-width:0.4;stroke:rgb(0,0,0)" />
+										<line x1="12.5" x2="12.5" y1="12" y2="70"></line>
+										<text x="12.5" y="7" text-anchor="middle" style="fill: black; font-size: 4.5px">Subscriber</text>
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 20)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="0,0 3,-2 3,2"></polygon>
+											<text x="10" y="-2"  style="font-size: 3.5px">Autant d'éléments que possible</text>
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 30)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="77,-2 77,2 80,0"></polygon>
+											<circle style="fill:#F8AD42" cx="10" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="20" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="30" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="40" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="50" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="60" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="70" cy="0" r="2.8"></circle>
+
+											<circle style="fill:#F8AD42" cx="85" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="88" cy="2" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="91" cy="4" r="2.8"></circle>
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 40)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="77,-2 77,2 80,0"></polygon>
+											<circle style="fill:#F8AD42" cx="10" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="20" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="30" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="40" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="50" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="60" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="70" cy="0" r="2.8"></circle>
+
+											<circle style="fill:#F8AD42" cx="85" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="88" cy="2" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="91" cy="4" r="2.8"></circle>
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 50)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="77,-2 77,2 80,0"></polygon>
+											<circle style="fill:#F8AD42" cx="10" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="20" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="30" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="40" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="50" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="60" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="70" cy="0" r="2.8"></circle>
+
+											<line x1="82.5" y1="-2.5" x2="87.5" y2="2.5" style="stroke:rgb(255,0,0);stroke-width:0.6" />
+											<line x1="87.5" y1="-2.5" x2="82.5" y2="2.5" style="stroke:rgb(255,0,0);stroke-width:0.6" />
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 60)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="77,-2 77,2 80,0"></polygon>
+											<circle style="fill:#F8AD42" cx="10" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="20" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="30" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="40" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="50" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="60" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="70" cy="0" r="2.8"></circle>
+
+											<line x1="82.5" y1="-2.5" x2="87.5" y2="2.5" style="stroke:rgb(255,0,0);stroke-width:0.6" />
+											<line x1="87.5" y1="-2.5" x2="82.5" y2="2.5" style="stroke:rgb(255,0,0);stroke-width:0.6" />
+									</g>
+
+								</svg>
+					</section>
+					<section>
+							<h4>Avec Backpressure : Pull mode</h4>
+							<svg style="width: 680px; height: 140px; overflow: visible;" viewBox="0 0 100 10">
+								
+									<g style="cursor: default;" transform="translate(40, 0)">
+										<rect width="25" height="12" style="fill:#6BB884;stroke-width:0.4;stroke:rgb(0,0,0)" />
+										<line x1="12.5" x2="12.5" y1="12" y2="70"></line>
+										<text x="12.5" y="7" text-anchor="middle" style="fill: black; font-size: 4.5px">Publisher</text>
+									</g>
+									<g style="cursor: default;" transform="translate(120, 0)">
+										<rect width="25" height="12" style="fill:#6BB884;stroke-width:0.4;stroke:rgb(0,0,0)" />
+										<line x1="12.5" x2="12.5" y1="12" y2="70"></line>
+										<text x="12.5" y="7" text-anchor="middle" style="fill: black; font-size: 4.5px">Subscriber</text>
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 20)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="0,0 3,-2 3,2"></polygon>
+											<text x="10" y="-2"  style="font-size: 3.5px">Demande 2 éléments</text>
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 30)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="77,-2 77,2 80,0"></polygon>
+											<circle style="fill:#F8AD42" cx="26" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="52" cy="0" r="2.8"></circle>
+
+											<circle style="fill:#F8AD42" cx="85" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="88" cy="2" r="2.8"></circle>
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 40)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="0,0 3,-2 3,2"></polygon>
+											<text x="10" y="-2"  style="font-size: 3.5px">Demande 0 élément</text>
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 50)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="0,0 3,-2 3,2"></polygon>
+											<text x="10" y="-2"  style="font-size: 3.5px">Demande 4 éléments</text>
+									</g>
+
+									<g class="fragment" style="cursor: default;" transform="translate(52.5, 60)">
+											<line x1="0" x2="80" y1="0" y2="0"></line>
+											<polygon points="77,-2 77,2 80,0"></polygon>
+											<circle style="fill:#F8AD42" cx="16" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="32" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="48" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="64" cy="0" r="2.8"></circle>
+
+											<circle style="fill:#F8AD42" cx="85" cy="0" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="88" cy="2" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="91" cy="4" r="2.8"></circle>
+											<circle style="fill:#F8AD42" cx="94" cy="6" r="2.8"></circle>
+									</g>
+
+								</svg>
+					</section>
+					<section data-transition="none">
+						<h3>Step 1 : Souscription initiale</h3>
+						<pre><code class="java" data-trim data-noescape>Flowable.range(1, 20)
+  .take(15)
+  .filter(value -> value % 2 == 0)
+  .test(0)
+  // ...
+						</code></pre>
+						<div class="fragment callout position-right"
+							data-callout="span.hljs-number:contains('15')"
+							data-callout-offset-top="65"
+							data-callout-offset-left="25">
+						<div class="callout-arrow"></div>
+						<div class="callout-text">Souscription au flux avec une demande initiale de 0 élément</div>
+					</section>
+					<section data-transition="none">
+						<h3>Step 2 : Vérifie les 4 premiers éléments</h3>
+						<pre><code class="java" data-trim data-noescape><mark>Flowable.range(1, 20)
+  .take(15)
+  .filter(value -> value % 2 == 0)
+  .test(0)</mark>
+  .requestMore(4)
+  .assertValues(2, 4, 6, 8)
+  .assertNotComplete()
+  // ...
+						</code></pre>
+						<div class="fragment callout position-right"
+							data-callout="span.hljs-number:contains('4')"
+							data-callout-offset-left="50">
+						<div class="callout-arrow"></div>
+						<div class="callout-text">demande l'émission de 4 éléments</div>
+					</section>
+					<section data-transition="none">
+						<h3>Step 3 : Vérifie le reste des éléments</h3>
+						<pre><code class="java" data-trim data-noescape><mark>Flowable.range(1, 20)
+  .take(15)
+  .filter(value -> value % 2 == 0)
+  .test(0)
+  .requestMore(4)
+  .assertValues(2, 4, 6, 8)
+  .assertNotComplete()</mark>
+  .requestMore(4)
+  .assertValues(2, 4, 6, 8, 10, 12, 14)
+  .assertComplete();
+						</code></pre>
+					</section>
+				</section>
+
+				<!-- Tester avec Rx Java en mode asynchrone-->
+				<section>
+					<section>
+						<h2>RxJava 2 : Tâches asynchrones</h2>
+
+						<p style="font-size: 50px" align="center">Notion de <span style="color: #F8AD42">Scheduler</span> permettant de permuter de thread au cours du traitement du flux</p>						
+						<p class="fragment" align="center"><em>Schedulers.io(), Schedulers.computation(), etc.</em></p>
+
+						<br />
+						<p class="fragment" style="font-size: 50px" align="center"><span style="color: #F8AD42">TestScheduler</span> virtualise et manipule le temps, déclenche un Scheduler</p>
+					</section>
+					<section>
+						<h2>RxJava 2 : TestScheduler</h2>
+						<ul>
+							<li class="fragment fade-up">advanceTimeTo</li>
+
+							<svg class="fragment fade-up"  style="width: 680px; height: 68px; overflow: visible;" viewBox="0 0 100 10">
+								<g style="cursor: default;" transform="translate(20, 2)">
+									<line x1="0" x2="20" y1="5" y2="5"></line>
+									<line style="stroke: red" x1="0" x2="0" y1="3.5" y2="6.5"></line>
+									<line style="stroke: #6BB884" x1="20" x2="20" y1="3.5" y2="6.5"></line>
+									<text text-anchor="middle" x="-8" y="6.5">10s</text>
+								</g>
+							</svg>
+							
+							<svg class="fragment fade-down"  style="width: 680px; height: 68px; overflow: visible;" viewBox="0 0 100 10">
+								<g style="cursor: default;" transform="translate(20, 2)">
+									<line x1="0" x2="40" y1="5" y2="5"></line>
+									<line style="stroke: red" x1="0" x2="0" y1="3.5" y2="6.5"></line>
+									<line x1="20" x2="20" y1="3.5" y2="6.5"></line>
+									<line style="stroke: #6BB884" x1="40" x2="40" y1="3.5" y2="6.5"></line>
+									<text text-anchor="middle" x="-8" y="6.5">20s</text>
+								</g>
+							</svg>
+
+							<svg class="fragment fade-up"  style="width: 680px; height: 68px; overflow: visible;" viewBox="0 0 100 10">
+								<g style="cursor: default;" transform="translate(20, 2)">
+									<line x1="0" x2="20" y1="5" y2="5"></line>
+									<line style="stroke: red" x1="0" x2="0" y1="3.5" y2="6.5"></line>
+									<line style="stroke: #6BB884" x1="20" x2="20" y1="3.5" y2="6.5"></line>
+									<text text-anchor="middle" x="-8" y="6.5">10s</text>
+								</g>
+							</svg>
+
+							<li class="fragment fade-up">advanceTimeBy</li>
+								
+							<svg class="fragment fade-up"  style="width: 680px; height: 68px; overflow: visible;" viewBox="0 0 100 10">
+								<g style="cursor: default;" transform="translate(20, 2)">	
+									<line x1="0" x2="20" y1="5" y2="5"></line>
+									<line style="stroke: red" x1="0" x2="0" y1="3.5" y2="6.5"></line>
+									<line style="stroke: #6BB884" x1="20" x2="20" y1="3.5" y2="6.5"></line>
+									<text text-anchor="middle" x="-8" y="6.5">10s</text>
+								</g>
+							</svg>
+							
+							<svg class="fragment fade-up"  style="width: 680px; height: 68px; overflow: visible;" viewBox="0 0 100 10">
+								<g style="cursor: default;" transform="translate(20, 2)">
+									<line x1="0" x2="60" y1="5" y2="5"></line>
+									<line x1="0" x2="0" y1="3.5" y2="6.5"></line>
+									<line style="stroke: red" x1="20" x2="20" y1="3.5" y2="6.5"></line>
+									<line x1="40" x2="40" y1="3.5" y2="6.5"></line>
+									<line style="stroke: #6BB884" x1="60" x2="60" y1="3.5" y2="6.5"></line>
+									<text text-anchor="middle" x="-8" y="6.5">20s</text>
+								</g>
+							</svg>
+						</ul>							
+					</section>
+					<section data-transition="none">
+							<h3>Step 1 : Injection du Scheduler</h3>
+							<pre><code class="java" data-trim data-noescape>TestScheduler scheduler = new TestScheduler();<mark>
+TestObserver&ltString&gt test = Observable.just("a", "b", "c", "d")
+  .map(String::toUpperCase)
+  .zipWith(</mark>Observable.intervalRange(1, 4, 0, 10, TimeUnit.SECONDS, scheduler)<mark>,
+          (letter, index) -> index + "-" + letter)
+  .test();</mark>
+							</code></pre>
+						</section>
+					<section data-transition="none">
+						<h3>Step 2 : Avance de 20 secondes</h3>
+						<pre><code class="java" data-trim data-noescape><mark>TestScheduler scheduler = new TestScheduler();
+TestObserver&ltString&gt test = Observable.just("a", "b", "c", "d")
+  .map(String::toUpperCase)
+  .zipWith(Observable.intervalRange(1, 4, 0, 10, TimeUnit.SECONDS, scheduler),
+          (letter, index) -> index + "-" + letter)
+  .test();</mark>
+
+scheduler.advanceTimeBy(20, TimeUnit.SECONDS);
+test.assertValues("1-A", "2-B", "3-C");
+						</code></pre>
+					</section>
+					<section data-transition="none">
+						<h3>Step 3 : Avance de 10 secondes</h3>
+						<pre><code class="java" data-trim data-noescape><mark>TestScheduler scheduler = new TestScheduler();
+TestObserver&ltString&gt test = Observable.just("a", "b", "c", "d")
+  .map(String::toUpperCase)
+  .zipWith(Observable.intervalRange(1, 4, 0, 10, TimeUnit.SECONDS, scheduler),
+          (letter, index) -> index + "-" + letter)
+  .test();
+
+scheduler.advanceTimeBy(20, TimeUnit.SECONDS);
+test.assertValues("1-A", "2-B", "3-C");</mark>
+
+scheduler.advanceTimeBy(10, TimeUnit.SECONDS);
+test.assertValues("1-A", "2-B", "3-C", "4-D");
+						</code></pre>
+					</section>
+					<section>
+						<p align="center" style="margin-top: 10%; font-size: 80px">
+							Tester avec des<br />
+							<strong style="color: #F8AD42">Schedulers</strong> utilisés<br />
+							<span style="color: #6b9cb8">explicitement dans le flux</span>
+						</p>
+					</section>			
+					<section data-transition="none">
+						<h3>Flux utilisant le Scheduler</h3>
+						<pre><code class="java" data-trim data-noescape><mark>List&ltString&gt names = List.of("spring-projects", "hibernate", "apache");
+
+Observable.fromIterable(names)</mark>
+  .map(name -> gitHub.getOrganization(name))
+  .subscribeOn(Schedulers.io())<mark>
+  .map(organization -> OrganizationStats.of(organization.getName(),
+        organization.getRepositories().size(),
+        organization.getMembers().size()));</mark>
+							</code></pre>
+						</section>
+						<section data-transition="none">
+								<h3>Step 1 : Injection du Scheduler</h3>
+								<pre><code class="java" data-trim data-noescape><mark>List&ltString&gt names = List.of("spring-projects", "hibernate", "apache");</mark>
+
+var testScheduler = new TestScheduler();<mark>
+Observable.fromIterable(names)
+  .map(name -> gitHub.getOrganization(name))</mark>
+  .subscribeOn(testScheduler)<mark>
+  .map(organization -> OrganizationStats.of(organization.getName(),
+      organization.getRepositories().size(),
+      organization.getMembers().size()))</mark>
+						</code></pre>
+					</section>
+					<section data-transition="none">
+							<h3>Step 2 : Souscription au flux</h3>
+							<pre><code class="java" data-trim data-noescape><mark>List&ltString&gt names = List.of("spring-projects", "hibernate", "apache");</mark>
+
+var testScheduler = new TestScheduler();
+var testObserver<mark> = Observable.fromIterable(names)
+  .map(name -> gitHub.getOrganization(name))</mark>
+  .subscribeOn(testScheduler)<mark>
+  .map(organization -> OrganizationStats.of(organization.getName(),
+      organization.getRepositories().size(),
+      organization.getMembers().size()))</mark>
+  .test();
+						</code></pre>
+					</section>
+					<section data-transition="none">
+						<h3>Step 3 : Déclenche les tâches asynchrone</h3>
+						<pre><code class="java" data-trim data-noescape><mark>List&ltString&gt names = List.of("spring-projects", "hibernate", "apache");</mark>
+
+var testScheduler = new TestScheduler();
+var testObserver<mark> = Observable.fromIterable(names)
+  .map(name -> gitHub.getOrganization(name))</mark>
+  .subscribeOn(testScheduler)<mark>
+  .map(organization -> OrganizationStats.of(organization.getName(),
+      organization.getRepositories().size(),
+      organization.getMembers().size()))</mark>
+  .test();
+
+testScheduler.triggerActions();
+testObserver
+  .assertValueCount(3)
+  .assertComplete();
+						</code></pre>
+					</section>
+					<section>
+						<p align="center" style="margin-top: 10%; font-size: 80px">
+							Tester avec des flux<br />
+							<strong style="color: #F8AD42">sans contrôle</strong><br />
+							des Schedulers ...
+						</p>
+					</section>
+					<section data-transition="none">
+							<h3>Pause du test ...</h3>
+							<pre><code class="java" data-trim data-noescape><mark>var names = List.of("apache", "spring-projects");
+
+TestSubscriber testSubscriber = </mark>githubService.findStatistics(names)<mark>
+  .test();</mark>
+			
+if (testSubscriber.awaitTerminalEvent(10, TimeUnit.SECONDS)) {<mark>
+  testSubscriber
+    .assertValueCount(2)
+    .assertValues(
+        OrganizationStats.of("The Apache Software Foundation", 1754, 662),
+        OrganizationStats.of("Spring", 206, 51))
+    .assertComplete();
+}</mark>
+							</code></pre>
+						</section>
+					</section>
+				<section>
+					<section>
+						<h2>Reactor : reactor-test</h2>
+						<br />
+						<p class="fragment" style="font-size: 50px" align="center"><span style="color: #F8AD42">StepVerifier</span> pour tester un flux en déclarant les événements attendus</p>
+						<br />
+						<p class="fragment" style="font-size: 50px" align="center"><span style="color: #F8AD42">VirtualTimeScheduler</span> pour manipuler le temps et l'horloge, remplace les schedulers associés aux flux</p>
+					</section>
+					<section data-transition="none">
+						<h3>StepVerifier</h3>
+						<pre><code class="java" data-trim data-noescape>var letters = Arrays.asList("a", "b", "c");
+Flux.range(0, 3)
+  .flatMap(i -> Mono.just(letters.get(i)).repeat(i))
+  .map(String::toUpperCase);
+						</code></pre>
+					</section>
+					<section data-transition="none">
+						<h3>Step 1 : Création du StepVerifier</h3>
+						<pre><code class="java" data-trim data-noescape><mark>var letters = Arrays.asList("a", "b", "c");
+Flux.range(0, 3)
+  .flatMap(i -> Mono.just(letters.get(i)).repeat(i))
+  .map(String::toUpperCase);</mark>
+  .as(StepVerifier::create)
+						</code></pre>
+					</section>
+					<section data-transition="none">
+						<h3>Step 2 : Description du scénario</h3>
+						<pre><code class="java" data-trim data-noescape><mark>var letters = Arrays.asList("a", "b", "c");
+Flux.range(0, 3)
+  .flatMap(i -> Mono.just(letters.get(i)).repeat(i))
+  .map(String::toUpperCase);</mark>
+  .as(StepVerifier::create)
+  .expectNext("A")
+  .expectNext("B", "B")
+  .expectNext("C", "C", "C")
+							</code></pre>
+						</section>
+					<section data-transition="none">
+						<h3>Step 2 : Description du scénario</h3>
+						<pre><code class="java" data-trim data-noescape><mark>var letters = Arrays.asList("a", "b", "c");
+Flux.range(0, 3)
+  .flatMap(i -> Mono.just(letters.get(i)).repeat(i))
+  .map(String::toUpperCase);</mark>
+  .as(StepVerifier::create)
+  .expectNext("A")
+  .expectNext("B", "B")
+  .expectNext("C", "C", "C")
+  .expectComplete()
+						</code></pre>
+					</section>
+					<section data-transition="none">
+						<h3>Step 3 : Souscription</h3>
+						<pre><code class="java" data-trim data-noescape><mark>var letters = Arrays.asList("a", "b", "c");
+Flux.range(0, 3)
+  .flatMap(i -> Mono.just(letters.get(i)).repeat(i))
+  .map(String::toUpperCase);</mark>
+  .as(StepVerifier::create)
+  .expectNext("A")
+  .expectNext("B", "B")
+  .expectNext("C", "C", "C")
+  .expectComplete()
+  .verify();
+						</code></pre>
+						<div class="fragment callout position-bottom"
+							data-callout="span.hljs-string:contains('C')"
+							data-callout-offset-top="60"
+							data-callout-offset-left="-80">
+						<div class="callout-arrow"></div>
+						<div class="callout-text">La méthode <em>verify</em> déclenche la souscription au flux</div>
+						</div>
+					</section>
+					<section align="center">
+						<p style="margin-top: 10%; font-size: 100px">
+								<span class="">Tester un flux qui émet</span><br />
+								<strong style="color: #6b9cb8">à intervalle régulier</strong>
+						</p>
+					</section>
+					<section data-transition="none">
+							<h3>Step 1 : Encapsulation du flux</h3>
+							<pre><code class="java" data-trim data-noescape>
+StepVerifier.withVirtualTime(() ->
+    Flux.interval(Duration.ofMillis(100), Schedulers.parallel())
+      .take(10))
+							</code></pre>
+					</section>
+					<section data-transition="none">
+							<h3>Step 2 : Pause en attente d'événements</h3>
+							<pre><code class="java" data-trim data-noescape><mark>StepVerifier.withVirtualTime(() ->
+    Flux.interval(Duration.ofMillis(100), Schedulers.parallel())
+      .take(10))</mark>
+  .thenAwait(Duration.ofSeconds(1))
+  .expectNextCount(10)
+							</code></pre>
+					</section>
+					<section data-transition="none">
+							<h3>Step 3 : Pause sans événements attendus</h3>
+							<pre><code class="java" data-trim data-noescape><mark>StepVerifier.withVirtualTime(() ->
+    Flux.interval(Duration.ofMillis(100), Schedulers.parallel())
+      .take(10))</mark>
+  .thenAwait(Duration.ofSeconds(1))
+  .expectNextCount(10)
+  .expectNoEvent(Duration.ofDays(1))
+							</code></pre>
+					</section>
+					<section data-transition="none">
+							<h3>Step 4 : Annule la souscription</h3>
+							<pre><code class="java" data-trim data-noescape><mark>StepVerifier.withVirtualTime(() ->
+    Flux.interval(Duration.ofMillis(100), Schedulers.parallel())
+      .take(10))</mark>
+  .thenAwait(Duration.ofSeconds(1))
+  .expectNextCount(10)
+  .expectNoEvent(Duration.ofDays(1))
+  .thenCancel()
+  .verify();
+							</code></pre>
+					</section>
+				</section>
+				<section>
+					<section align="center">
+						<p style="margin-top: 10%; font-size: 100px">
+								<strong style="color: #6b9cb8">Debugger</strong><br />
+								un flux réactif
+						</p>
+					</section>
+
+					<section data-state="flash bgpicture1">
+						<div style="text-align:center">
+							<img src="images/debug_stacktrace.png" width="90%"  height="90%" style="border: solid 2px white; margin-top: 40px"/>
+						</div>
+					</section>
+
+					<section data-transition="none">
+						<h3>Reactor : Hooks.onOperatorDebug()</h3>
+						<pre><code class="java" data-trim data-noescape>Hooks.onOperatorDebug();<mark>
+
+var names = List.of("jhipster", "bad-project");
+
+Flux.fromStream(names.stream())
+  .flatMap(githubService::getOrganisationStats)
+  .subscribeOn(Schedulers.elastic())
+  .publishOn(Schedulers.single())
+  .subscribe(value -> log.info("{}", value));</mark>
+						</code></pre>
+						<img class="fragment" src="images/debug_reactor_hooks.png" style="margin: 30px">
+					</section>
+
+					<section data-transition="none">
+							<h3>Reactor : opérateur checkpoint</h3>
+							<pre><code class="java" data-trim data-noescape><mark>var names = List.of("jhipster", "bad-project");
+	
+Flux.fromStream(names.stream())
+  .flatMap(githubService::getOrganisationStats)</mark>
+  .checkpoint("Github remote")<mark>
+  .subscribeOn(Schedulers.elastic())
+  .publishOn(Schedulers.single())
+  .subscribe(value -> log.info("{}", value));</mark>
+							</code></pre>
+							<img class="fragment" src="images/debug_reactor_checkpoint.png" style="margin: 30px">
+						</section>
+
+				</section>
+				
+				<!--
+				<section data-state="demo flash" align="center">
+					<h1>Live demo</h1>
+				</section>
+				-->
+				<section data-state="flash" align="center">
+					<h1>Merci pour votre attention</h1>
+					<p style="color: #6BB884; font-size: 60px">@juliensadaoui</p>
+					<p style="color: #6BB884; font-size: 60px">http://blog.ippon.fr/</p>
+				</section>
+			</div>
+			<div class="footer">
+				<p>#DevoxxFR</p><img style="text-align: right" src="images/logos Devoxx France/logo-texte-devoxx-france-400.png" />
+			</div>
+		</div>
+
+		<script src="js/jquery.min.js"></script>
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+		<script src="js/custom-scripts.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+				center: false,
+				controls: false,
+				progress: true,
+                width: 1280,
+                height: 720,
+                slideNumber: true,
+                margin: 0.0,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: false, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
